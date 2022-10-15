@@ -77,12 +77,17 @@ const initialHistoryList = [
 ]
 
 class PreviousHistory extends Component {
-  state = {searchInput: '', historyList: initialHistoryList}
+  state = {
+    searchInput: '',
+    historyList: initialHistoryList,
+    listCount: initialHistoryList.length,
+  }
 
   deleteItem = id => {
     const {historyList} = this.state
-    const updatedList = historyList.map(eachItem => eachItem.id !== id)
+    const updatedList = historyList.filter(eachItem => eachItem.id !== id)
     this.setState({historyList: updatedList})
+    this.setState({listCount: updatedList.length})
   }
 
   onChangeSearchInput = event => {
@@ -92,9 +97,12 @@ class PreviousHistory extends Component {
   render() {
     const {searchInput} = this.state
     const {historyList} = this.state
+    const {listCount} = this.state
     const searchResult = historyList.filter(eachHistory =>
       eachHistory.title.toLowerCase().includes(searchInput.toLowerCase()),
     )
+    const className =
+      searchResult.length === 0 || listCount === 0 ? 'display' : 'no-display'
 
     return (
       <div className="app-container">
@@ -128,6 +136,7 @@ class PreviousHistory extends Component {
             />
           ))}
         </ul>
+        <p className={className}>There is no history to show</p>
       </div>
     )
   }
